@@ -1,1 +1,169 @@
 
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AKHIL's Molecular Analyzer</title>
+
+    <script src="https://3Dmol.csb.pitt.edu/build/3Dmol-min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at top, #020617, #000);
+            color: white;
+            text-align: center;
+            padding: 40px;
+            overflow-x: hidden;
+        }
+
+        /* 🔥 glowing title */
+        h1 {
+            font-size: 2.5rem;
+            color: #38bdf8;
+            text-shadow: 0 0 20px #38bdf8;
+        }
+
+        /* glass card */
+        .box {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(15px);
+            padding: 30px;
+            margin-top: 40px;
+            border-radius: 20px;
+            width: 85%;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 0 30px rgba(56,189,248,0.2);
+        }
+
+        /* inputs */
+        input {
+            width: 60%;
+            padding: 14px;
+            margin: 10px;
+            border-radius: 12px;
+            border: none;
+            font-size: 16px;
+            background: #111;
+            color: white;
+        }
+
+        /* button */
+        button {
+            padding: 14px 30px;
+            border-radius: 12px;
+            background: linear-gradient(45deg, #38bdf8, #0ea5e9);
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 15px #38bdf8;
+        }
+
+        /* 2D image */
+        img {
+            margin-top: 20px;
+            width: 320px;
+            border-radius: 15px;
+        }
+
+        /* 🔥 3D BOX */
+        #viewer {
+            width: 700px;
+            height: 450px;
+            margin: 40px auto;
+            border-radius: 15px;
+            border: 2px solid rgba(56,189,248,0.6);
+            box-shadow: 0 0 30px rgba(56,189,248,0.4);
+
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* floating symbols */
+        .symbol {
+            position: fixed;
+            font-size: 40px;
+            opacity: 0.05;
+            animation: float 25s linear infinite;
+        }
+
+        @keyframes float {
+            from {transform: translateY(100vh);}
+            to {transform: translateY(-10vh);}
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- floating chemistry vibes -->
+<div class="symbol" style="left:10%">⚗️</div>
+<div class="symbol" style="left:30%; animation-delay:5s;">⚛️</div>
+<div class="symbol" style="left:50%; animation-delay:10s;">🧪</div>
+<div class="symbol" style="left:70%; animation-delay:3s;">⚗️</div>
+<div class="symbol" style="left:90%; animation-delay:7s;">⚛️</div>
+
+<h1>🧪 AKHIL's Molecular Analyzer</h1>
+
+<form method="POST">
+    <input type="text" name="name" placeholder="Enter Compound Name"><br>
+    <input type="text" name="smiles" placeholder="Enter SMILES"><br>
+    <button type="submit">Analyze</button>
+</form>
+
+{% if output %}
+<div class="box">
+
+    <h2>{{ name }}</h2>
+
+    <h3>Results:</h3>
+    <pre>{{ output }}</pre>
+
+    <h3>2D Structure:</h3>
+    <img src="data:image/png;base64,{{ img }}">
+
+    <h3>3D Structure:</h3>
+    <div id="viewer"></div>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    let element = document.getElementById("viewer");
+
+    let viewer = $3Dmol.createViewer(element, {
+        backgroundColor: "#000"
+    });
+
+    let molData = `{{ molblock | safe }}`;
+
+    if (molData && molData.length > 0) {
+
+        viewer.addModel(molData, "mol");
+
+        // 🔥 CLEAN WHITE MODEL (NO WRONG COLORS)
+        viewer.setStyle({}, {
+            stick: {radius:0.25, color:"white"}
+        });
+
+        viewer.zoomTo();
+        viewer.zoom(1.2);
+
+        viewer.render();
+        viewer.resize();
+    }
+
+});
+</script>
+
+{% endif %}
+
+</body>
+</html>
