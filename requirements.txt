@@ -1,4 +1,3 @@
 flask
-rdkit
+rdkit-pypi
 requests
-pillow
