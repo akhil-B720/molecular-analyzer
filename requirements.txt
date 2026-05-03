@@ -1,2 +1,5 @@
-flask
-rdkit
+flask==3.0.3
+gunicorn==21.2.0
+numpy==1.26.4
+rdkit==2023.9.5
+Pillow
